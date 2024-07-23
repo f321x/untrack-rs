@@ -343,3 +343,109 @@ fn test_url_encoding() {
     assert!(result.is_some());
     assert_eq!(input, "Encoded URL: https://www.youtube.com/watch?v=abc");
 }
+
+#[test]
+fn test_no_urls2() {
+    let input = String::from("This is a text without any URLs.");
+    assert_eq!(clean_urls_from_any_text(&input), None);
+}
+
+#[test]
+fn test_clean_url() {
+    let input = String::from("Check out https://www.example.com");
+    assert_eq!(clean_urls_from_any_text(&input), None);
+}
+
+#[test]
+fn test_twitter_url2() {
+    let input =
+        String::from("Twitter link: https://twitter.com/user/status/123?utm_source=test&s=1234");
+    let expected = vec!["https://twitter.com/user/status/123".to_string()];
+    assert_eq!(clean_urls_from_any_text(&input), Some(expected));
+}
+
+#[test]
+fn test_youtube_url2() {
+    let input = String::from("YouTube video: https://www.youtube.com/watch?v=dQw4w9WgXcQ&feature=youtu.be&utm_source=share");
+    let expected = vec!["https://www.youtube.com/watch?v=dQw4w9WgXcQ".to_string()];
+    assert_eq!(clean_urls_from_any_text(&input), Some(expected));
+}
+
+#[test]
+fn test_substack_url2() {
+    let input = String::from(
+        "Substack article: https://example.substack.com/p/article?utm_source=newsletter&r=123",
+    );
+    let expected = vec!["https://example.substack.com/p/article".to_string()];
+    assert_eq!(clean_urls_from_any_text(&input), Some(expected));
+}
+
+#[test]
+fn test_spotify_url2() {
+    let input = String::from(
+        "Spotify track: https://open.spotify.com/track/123?si=abc&utm_source=copy-link",
+    );
+    let expected = vec!["https://open.spotify.com/track/123".to_string()];
+    assert_eq!(clean_urls_from_any_text(&input), Some(expected));
+}
+
+#[test]
+fn test_instagram_url2() {
+    let input = String::from("Instagram post: https://www.instagram.com/p/ABC123/?utm_source=ig_web_copy_link&igshid=123");
+    let expected = vec!["https://www.instagram.com/p/ABC123/".to_string()];
+    assert_eq!(clean_urls_from_any_text(&input), Some(expected));
+}
+
+#[test]
+fn test_multiple_urls2() {
+    let input = String::from(
+        "Multiple URLs: https://twitter.com/user/status/123?utm_source=test \
+                              https://www.youtube.com/watch?v=dQw4w9WgXcQ&feature=youtu.be \
+                              https://example.substack.com/p/article?utm_source=newsletter",
+    );
+    let expected = vec![
+        "https://twitter.com/user/status/123".to_string(),
+        "https://www.youtube.com/watch?v=dQw4w9WgXcQ".to_string(),
+        "https://example.substack.com/p/article".to_string(),
+    ];
+    assert_eq!(clean_urls_from_any_text(&input), Some(expected));
+}
+
+#[test]
+fn test_mixed_clean_and_tracking_urls() {
+    let input = String::from(
+        "Mixed URLs: https://www.example.com \
+                              https://twitter.com/user/status/123?utm_source=test \
+                              https://www.cleanurl.com",
+    );
+    let expected = vec!["https://twitter.com/user/status/123".to_string()];
+    assert_eq!(clean_urls_from_any_text(&input), Some(expected));
+}
+
+#[test]
+fn test_url_with_multiple_tracking_params() {
+    let input = String::from("Complex URL: https://www.youtube.com/watch?v=dQw4w9WgXcQ&feature=youtu.be&utm_source=share&utm_medium=social&utm_campaign=spring2023");
+    let expected = vec!["https://www.youtube.com/watch?v=dQw4w9WgXcQ".to_string()];
+    assert_eq!(clean_urls_from_any_text(&input), Some(expected));
+}
+
+#[test]
+fn test_url_with_non_tracking_params2() {
+    let input = String::from("URL with params: https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=30s");
+    assert_eq!(clean_urls_from_any_text(&input), None);
+}
+
+#[test]
+fn test_malformed_url() {
+    let input = String::from("Malformed URL: https://twitter com/user/status/123?utm_source=test");
+    assert_eq!(clean_urls_from_any_text(&input), None);
+}
+
+#[test]
+fn test_url_encoding2() {
+    let input = String::from(
+        "Encoded URL: https://twitter.com/search?q=rust%20programming&src=typed_query&f=live",
+    );
+    let expected = vec!["https://twitter.com/search?q=rust%20programming&f=live".to_string()];
+    assert_eq!(clean_urls_from_any_text(&input), Some(expected));
+}

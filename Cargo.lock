@@ -73,7 +73,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "untrack-rs"
+name = "untrack"
 version = "0.1.0"
 dependencies = [
  "linkify",
