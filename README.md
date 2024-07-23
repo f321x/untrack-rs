@@ -5,7 +5,7 @@ This crate is intended to remove tracking tokens from URLs contained in any text
 Removing tracking tokens can improve the privacy of the user sharing the link containing the tokens and the consumer opening the shared link.
 
 ## Supported tracking tokens
-The crate currently supports Twitter, X, YouTube, Substack and Spotify tracking tokens. The exact tokens can be found in ```src/parsing_params.rs```.
+The crate currently supports Twitter, X, YouTube, Instagram, Substack and Spotify tracking tokens. The exact tokens can be found in ```src/parsing_params.rs```.
 
 ## Example usage
 
