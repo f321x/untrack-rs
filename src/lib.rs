@@ -1,3 +1,6 @@
+//! This crate is intended to remove tracking tokens from URLs contained in any text input.
+//! The crate can either substitute the URLs in place or return a Vec of cleaned urls to a given text input.
+
 mod parsing_core;
 mod parsing_params;
 
