@@ -1,0 +1,22 @@
+[package]
+name = "untrack"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Library to parse and remove tracking tokens from URLs contained in arbitrary text input"
+homepage = "https://github.com/f321x/untrack-rs"
+repository = "https://github.com/f321x/untrack-rs"
+readme = "README.md"
+keywords = ["privacy", "tracking", "url", "parsing", "links"]
+categories = ["parser-implementations", "parsing", "text-processing", "value-formatting", "web-programming"]
+
+[dependencies]
+linkify = "0.10.0"
+url = "2.5.2"
+
+[profile.release]
+lto = true
+opt-level = 3
+strip = true
+codegen-units = 1
+debug = false

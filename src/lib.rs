@@ -9,9 +9,8 @@ use parsing_core::Parser;
 use std::collections::HashSet;
 use url::Url;
 
-/// Takes any string as input, parses URLs, returns either Ok(None) if no tracking tokens
-/// were found. Otherwise returns Ok(Vec<String>) of all URLs that contained tracking tokens
-/// and have been cleaned
+/// Takes any string as input, parses URLs, returns either `None` if no tracking tokens
+/// were found. Otherwise returns `Some(Vec<String>)` of all sanitized URLs
 pub fn clean_urls_from_any_text(input: &String) -> Option<Vec<String>> {
     let parser = Parser::new();
     let cleaned_urls = parser.parse_any_text(input);
