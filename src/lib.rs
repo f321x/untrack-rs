@@ -31,7 +31,7 @@ pub fn replace_urls_in_place(input: &mut String) -> Option<&mut String> {
     }
 }
 
-/// Sanitizes the input and returns Some<String> if any changes were made
+/// Sanitizes the input and returns `Some<String>` if any changes were made
 pub fn clone_and_sanitize_text(input: &str) -> Option<String> {
     let mut cloned_input = String::from(input);
     let parser = Parser::new();
