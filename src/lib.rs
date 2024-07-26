@@ -12,20 +12,32 @@ use parsing_core::Parser;
 use std::collections::HashSet;
 use url::Url;
 
-/// Takes any string as input, parses URLs, returns either `None` if no tracking tokens
+/// Takes any String as input, parses URLs, returns either `None` if no tracking tokens
 /// were found. Otherwise returns `Some(Vec<String>)` of all sanitized URLs
-pub fn clean_urls_from_any_text(input: &String) -> Option<Vec<String>> {
+pub fn clean_urls_from_any_text(input: &str) -> Option<Vec<String>> {
     let parser = Parser::new();
     let cleaned_urls = parser.parse_any_text(input);
     cleaned_urls
 }
 
-/// Parses any text and sanitizes URLs containing tracking tokens in place
+/// Parses any (mutable) String and sanitizes URLs containing tracking tokens in place
 pub fn replace_urls_in_place(input: &mut String) -> Option<&mut String> {
     let parser = Parser::new();
     let changes = parser.sanitize_in_place(input);
     if changes.is_some() {
         Some(input)
+    } else {
+        None
+    }
+}
+
+/// Sanitizes the input and returns Some<String> if any changes were made
+pub fn clone_and_sanitize_text(input: &str) -> Option<String> {
+    let mut cloned_input = String::from(input);
+    let parser = Parser::new();
+    let changes = parser.sanitize_in_place(&mut cloned_input);
+    if changes.is_some() {
+        Some(cloned_input)
     } else {
         None
     }
