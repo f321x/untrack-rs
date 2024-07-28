@@ -449,3 +449,13 @@ fn test_url_encoding2() {
     let expected = vec!["https://twitter.com/search?q=rust%20programming&f=live".to_string()];
     assert_eq!(clean_urls_from_any_text(&input), Some(expected));
 }
+
+#[test]
+fn test_clean_urls_and_get_removed_part() {
+    let input = String::from("Mixed URLs: https://www.example.com https://twitter.com/user/status/123?utm_source=test https://www.cleanurl.com");
+    let expected = vec![(
+        "https://twitter.com/user/status/123".to_string(),
+        "?utm_source=test".to_string(),
+    )];
+    assert_eq!(clean_urls_and_get_removed_part(&input), Some(expected));
+}

@@ -40,7 +40,7 @@ impl Parser {
                 continue;
             }
 
-            let diff_to_original: String = diff::lines(&cleaned_url, url.as_str())
+            let diff_to_original: String = diff::chars(&cleaned_url, url.as_str())
                 .into_iter()
                 .filter_map(|result| match result {
                     diff::Result::Right(r) => Some(r.to_string()),
