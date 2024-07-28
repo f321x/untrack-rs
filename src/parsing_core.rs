@@ -12,34 +12,44 @@ impl Parser {
         Self { finder }
     }
 
-    pub fn parse_any_text(&self, input: &str) -> Option<Vec<String>> {
+    pub fn parse_any_text(&self, input: &str) -> Option<Vec<(String, String)>> {
         let links: Vec<_> = self.finder.links(input).collect();
         if links.is_empty() {
             return None;
         }
 
-        let mut cleaned_links: Vec<String> = Vec::new();
+        let mut cleaned_links: Vec<(String, String)> = Vec::new();
         for link in links {
             let url = match Url::parse(link.as_str()) {
                 Ok(url) => url,
                 Err(_) => continue,
             };
 
+            let cleaned_url: String;
             if let Some(youtube_link) = parse_youtube_url(self, &url) {
-                cleaned_links.push(youtube_link);
+                cleaned_url = youtube_link;
+            } else if let Some(twitter_link) = parse_twitter_url(self, &url) {
+                cleaned_url = twitter_link;
+            } else if let Some(instagram_link) = parse_instagram_url(self, &url) {
+                cleaned_url = instagram_link;
+            } else if let Some(spotify_link) = parse_spotify_url(self, &url) {
+                cleaned_url = spotify_link;
+            } else if let Some(substack_link) = parse_substack_url(self, &url) {
+                cleaned_url = substack_link;
+            } else {
+                continue;
             }
-            if let Some(twitter_link) = parse_twitter_url(self, &url) {
-                cleaned_links.push(twitter_link);
-            }
-            if let Some(instagram_link) = parse_instagram_url(self, &url) {
-                cleaned_links.push(instagram_link);
-            }
-            if let Some(spotify_link) = parse_spotify_url(self, &url) {
-                cleaned_links.push(spotify_link);
-            }
-            if let Some(substack_link) = parse_substack_url(self, &url) {
-                cleaned_links.push(substack_link);
-            }
+
+            let diff_to_original: String = diff::lines(&cleaned_url, url.as_str())
+                .into_iter()
+                .filter_map(|result| match result {
+                    diff::Result::Right(r) => Some(r.to_string()),
+                    _ => None,
+                })
+                .collect::<Vec<String>>()
+                .join("");
+
+            cleaned_links.push((cleaned_url, diff_to_original));
         }
         if !cleaned_links.is_empty() {
             Some(cleaned_links)
@@ -68,13 +78,13 @@ impl Parser {
                 // Find the corresponding cleaned link
                 if let Some(cleaned_link) = cleaned_links.iter().find(|&cl| {
                     let original_url = Url::parse(link.as_str()).ok();
-                    let cleaned_url = Url::parse(cl).ok();
+                    let cleaned_url = Url::parse(&cl.0).ok();
                     match (original_url, cleaned_url) {
                         (Some(ou), Some(cu)) => ou.path() == cu.path() && ou.host() == cu.host(),
                         _ => false,
                     }
                 }) {
-                    result.push_str(cleaned_link);
+                    result.push_str(&cleaned_link.0);
                 } else {
                     // If no cleaned version found, keep the original link
                     result.push_str(link.as_str());

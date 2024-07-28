@@ -1,6 +1,6 @@
 [package]
 name = "untrack"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 license = "MIT"
 description = "Library to parse and remove tracking tokens from URLs contained in arbitrary text input"
@@ -11,6 +11,7 @@ keywords = ["privacy", "tracking", "url", "parsing", "links"]
 categories = ["parser-implementations", "parsing", "text-processing", "value-formatting", "web-programming"]
 
 [dependencies]
+diff = "0.1"
 linkify = "0.10"
 url = "2.5"
 
