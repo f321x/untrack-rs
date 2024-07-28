@@ -17,6 +17,20 @@ use url::Url;
 pub fn clean_urls_from_any_text(input: &str) -> Option<Vec<String>> {
     let parser = Parser::new();
     let cleaned_urls = parser.parse_any_text(input);
+    if cleaned_urls.is_none() {
+        return None;
+    }
+    cleaned_urls.map(|urls| {
+        urls.into_iter()
+            .map(|(cleaned_url, _)| cleaned_url)
+            .collect()
+    })
+}
+
+/// Same as clean_urls_from_any_text, but returns Tuples of the sanitized URL and the part that was removed
+pub fn clean_urls_and_get_removed_part(input: &str) -> Option<Vec<(String, String)>> {
+    let parser = Parser::new();
+    let cleaned_urls = parser.parse_any_text(input);
     cleaned_urls
 }
 
